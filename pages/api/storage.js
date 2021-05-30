@@ -1,14 +1,9 @@
 export function setAuthData(data) {
-    localStorage.setItem("authData", JSON.stringify(data));
+  window.localStorage.setItem('user', JSON.stringify(data));
   }
   
-  export function getAuthData() {
-    if (typeof localStorage === "object") {
-      return JSON.parse(localStorage.getItem("authData"));
-    }
-  }
-  
-  export function removeAuthData() {
-    localStorage.removeItem("authData");
-  }
+export function getAuthData() {
+  JSON.parse(window.localStorage.getItem('user'));
+}
+
   
