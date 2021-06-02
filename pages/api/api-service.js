@@ -2,43 +2,32 @@ import axios from 'axios';
 import { AES } from "crypto-js";
 import { getAuthData } from "./storage";
 
+//使用自定义配置创建axios的新实例
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:3000/api",
+  baseURL: process.env.NEXT_PUBLIC_API || "http://localhost:3000/api",
 });
 
-//axiosInstance.interceptors.request(请求拦截器)：请求发送前进行一些操作
-axiosInstance.interceptors.request.use((config) => {
-  if (!config.url.includes('login')) {
-    return {
-      ...config,
-      headers: {
-        ...config.headers,
-        Authorization: 'Bearer ' + storage?.token,
-      },
-    };
-  }
-  return config;
-});
-
-function post(path, requestBody) {
+//封装axios请求
+function post(url, params) {
   return axiosInstance
-    .post(path, requestBody)
-    .then(response => {
+    .post(url, params)
+    //使用then方法添加回调函数, 回调一个以response为参数的箭头函数
+    .then(res => {
       return new Promise(resolve => {
-        resolve(response.data);
+        resolve(res.data);
       });
     })
     .catch(error => {
-      return new Promise((_resolve, reject) => {
-        reject(error.response.data);
-      });
-    });
+      console.error(error);
+    }); 
 }
 
-export function login(viewValues) {
-  return post("/login", {
-    email: viewValues.email,
-    password: AES.encrypt(viewValues.password, process.env.NEXT_PUBLIC_AES_KEY).toString(),
-    role: viewValues.role,
+export function login(data) {
+  return post("/new-page", {
+    email: data.email,
+    password: AES.encrypt(data.password, process.env.NEXT_PUBLIC_AES_KEY).toString(),
+    role: data.role,
   });
 };
+
+

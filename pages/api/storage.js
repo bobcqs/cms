@@ -5,5 +5,3 @@ export function setAuthData(data) {
 export function getAuthData() {
   JSON.parse(window.localStorage.getItem('user'));
 }
-
-  

@@ -1,12 +1,21 @@
 import 'antd/dist/antd.css';
+import { useRouter } from "next/router";
 import { Button } from 'antd';
 import { Input, Radio, Checkbox, Row, Col } from 'antd';
 import { Form } from 'antd';
 import { UserOutlined, LockOutlined} from '@ant-design/icons';
-import { login } from './api/api-service';
-import { setAuthData } from './api/storage';
+import axios from 'axios';
+import { AES } from "crypto-js";
+import { login } from "./api/api-service"
+
 
 export default function Home() {
+  const router = useRouter();
+
+  const onFinish = values => {
+
+  };
+
   function onChangeRadio(e) {
     console.log(`radio checked:${e.target.value}`);
   }
@@ -14,23 +23,7 @@ export default function Home() {
   function onChangeCheckbox(checkedValues) {
     console.log('checked = ', checkedValues);
   }
-
-  const onFinish = values => {
-    login(values)
-      .then(({ data }) => {
-        setAuthData(data);
-        router.push("/new-page");
-      })
-      .catch(({ msg }) => {
-        message.error(msg);
-      });
-      console.log('Success!', values);    
-  };
-
-  const onFinishFailed = (errorInfo) => {
-    console.log('Failed:', errorInfo);
-  };
-
+  
   //checkbox的选项
   const plainOptions = ['Remember me'];
 
