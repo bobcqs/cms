@@ -1,7 +1,3 @@
-export function setAuthData(data) {
-  window.localStorage.setItem('user', JSON.stringify(data));
-  }
-  
-export function getAuthData() {
-  JSON.parse(window.localStorage.getItem('user'));
+export function setUserData(data) {
+  localStorage.setItem("key", JSON.stringify(data));
 }

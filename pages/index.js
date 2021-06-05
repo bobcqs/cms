@@ -6,15 +6,29 @@ import { Form } from 'antd';
 import { UserOutlined, LockOutlined} from '@ant-design/icons';
 import axios from 'axios';
 import { AES } from "crypto-js";
-import { login } from "./api/api-service"
+import { setUserData } from "./api/storage";
 
 
 export default function Home() {
   const router = useRouter();
 
   const onFinish = values => {
-
+    console.log(values)
+    axios.post('https://cms.chtoma.com/api/login', {
+      email: values.email,
+      password: AES.encrypt(values.password, 'cms').toString(),
+      role: values.role,
+    })
+    // .then(function (response) {
+    //   console.log(response);
+    //   setUserData(values);
+    //   router.push("/new-page");
+    // })
+    .catch(function (error) {
+      console.log(error);
+    });
   };
+
 
   function onChangeRadio(e) {
     console.log(`radio checked:${e.target.value}`);
@@ -36,12 +50,16 @@ export default function Home() {
         <Col md={8}>
             <Form
               name="login"
-              onFinish={onFinish}>
-              <Form.Item>
+              onFinish={onFinish}
+              initialValues={{
+                role: "manager"
+              }}>
+              <Form.Item
+                name="role">
                 <Radio.Group onChange={onChangeRadio} defaultValue="a">
-                  <Radio.Button value="Student">Student</Radio.Button>
-                  <Radio.Button value="Teacher">Teacher</Radio.Button>
-                  <Radio.Button value="Manager">Manager</Radio.Button>
+                  <Radio.Button value="student">Student</Radio.Button>
+                  <Radio.Button value="teacher">Teacher</Radio.Button>
+                  <Radio.Button value="manager">Manager</Radio.Button>
                 </Radio.Group> 
               </Form.Item>
               <Form.Item
