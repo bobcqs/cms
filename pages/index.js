@@ -1,34 +1,50 @@
 import 'antd/dist/antd.css';
 import { useRouter } from "next/router";
 import { Button } from 'antd';
-import { Input, Radio, Checkbox, Row, Col } from 'antd';
+import { Input, Radio, Checkbox, Row, Col, message } from 'antd'
 import { Form } from 'antd';
 import { UserOutlined, LockOutlined} from '@ant-design/icons';
 import axios from 'axios';
 import { AES } from "crypto-js";
-import { setUserData } from "./api/storage";
+import { setUserData } from "./services/storage";
+import { login } from "./services/api-service";
+
+
 
 
 export default function Home() {
   const router = useRouter();
 
   const onFinish = values => {
-    console.log(values)
-    axios.post('https://cms.chtoma.com/api/login', {
-      email: values.email,
-      password: AES.encrypt(values.password, 'cms').toString(),
-      role: values.role,
-    })
-    // .then(function (response) {
-    //   console.log(response);
-    //   setUserData(values);
-    //   router.push("/new-page");
+    // axios.post('https://cms.chtoma.com/api/login', {
+    //   email: values.email,
+    //   password: AES.encrypt(values.password, 'cms').toString(),
+    //   role: values.role,
     // })
-    .catch(function (error) {
-      console.log(error);
+    login(values)
+    //服务器发浏览器，浏览器收到数据后，发回一个status code，判断如果status code 是201就进入then
+    .then(function (response) {
+      setUserData(response.data.data);
+      router.push("/student-list");
+    })
+    .catch(function () {
+      message.error("Invalid email or password");
     });
-  };
 
+    axios.interceptors.request.use(function (config) {
+  // 在发送请求之前做些什么
+  if (!config.url.includes("login")) {
+    return {
+      ...config,
+      headers: {
+        ...config.headers,
+        Authorization: `Bearer ${getUserData().token}`,
+      },
+    };
+  }
+  return config;
+  });
+  }
 
   function onChangeRadio(e) {
     console.log(`radio checked:${e.target.value}`);

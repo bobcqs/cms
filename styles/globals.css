@@ -14,3 +14,17 @@ a {
 * {
   box-sizing: border-box;
 }
+
+.logo {
+  height: 64px;
+  display: inline-flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+  color: #fff;
+  letter-spacing: 5px;
+  text-shadow: 5px 1px 5px;
+  transform: rotateX(45deg);
+  font-family: monospace;
+}
